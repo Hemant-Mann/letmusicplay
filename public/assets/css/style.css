@@ -1,7 +1,10 @@
-body {
-  padding-top: 5rem;
+.ui-filter-inset {
+    margin-top: 0;
 }
-.starter-template {
-  padding: 3rem 1.5rem;
-  text-align: center;
+
+[data-role=footer] {
+    bottom: 0;
+    position: absolute !important;
+    top: auto !important;
+    width: 100%;
 }
