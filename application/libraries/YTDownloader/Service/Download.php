@@ -57,7 +57,7 @@ class Download {
 		$this->_videoId = $id;
 	}
 
-	protected function _download($code = 22, $extension = "mp4") {
+	protected function _download($code = 18, $extension = "mp4") {
 		$fileName = $this->_videoId . "-{$code}" . ".{$extension}";
 		$file = self::$_root . $fileName;
 
@@ -92,7 +92,7 @@ class Download {
 
 			preg_match("/x([0-9]{3,4})/", $value, $match);
 
-			if ($match[1]) {
+			if (isset($match[1])) {
 				$code = (int) substr($value, 0, 3);
 
 				if (!preg_match("/DASH\s(video|audio)/", $value)) {
@@ -108,12 +108,14 @@ class Download {
 	 */
 	public function convert($fmt = "mp3") {
 		Regex::validate(array('extension' => $fmt));
-		$this->_converted = self::$_root . $this->_videoId . ".{$fmt}";
+		$filename = $this->_videoId . ".{$fmt}";
+		$this->_converted = self::$_root . $filename;
 		if (file_exists($this->_converted)) {
 			return;
 		}
 		$this->_download();
 		Convert::To($fmt, $this->_file, $this->_converted);
+		return $filename;
 	}
 
 	public function getVideoId() {

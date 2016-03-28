@@ -8,6 +8,7 @@
 use Shared\Controller as Controller;
 use Framework\Registry as Registry;
 use Framework\RequestMethods as RequestMethods;
+use Shared\Services\Youtube as Youtube;
 
 class Music extends Controller {
     /**
@@ -31,12 +32,13 @@ class Music extends Controller {
         $view = $this->getActionView();
 
         $q = RequestMethods::get("q");
-        $results = Shared\Services\Youtube::search($q);
+        $results = Youtube::search($q);
         if (is_string($results)) {
             $songs = array();
         } else {
             $songs = $results;
         }
+
         $view->set("songs", $songs)
             ->set("query", $q);
     }
@@ -47,18 +49,67 @@ class Music extends Controller {
 
         if (!$id) $this->redirect("/");
         
+        $formats = Youtube::formats($id);
         $view->set("title", $title)
+            ->set("formats", $formats)
             ->set("id", $id);
     }
 
-    public function convert($youtubeid='') {
+    public function convert($youtubeid = '') {
     	$this->seo(array("title" => "Music Search"));
         $view = $this->getActionView();
     }
 
-    public function download($youtubeid='') {
-    	$this->seo(array("title" => "Music Search"));
-        $view = $this->getActionView();
+    public function download($fmt = 18, $youtubeid = '') {
+        $this->noview();
+
+        $extension = RequestMethods::get("ext", "mp3");
+        if (preg_match('/[a-z]/i', $fmt)) {
+            $fmt = "mp3"; $action = "mp3";
+        } else {
+            $action = "video";
+        }
+        try {
+            $file = Youtube::download($youtubeid, [
+                'action' => $action,
+                'fmt' => $fmt,
+                'extension' => $extension
+            ]);
+        } catch (\Exception $e) {
+            $this->redirect("/404");
+        }
+        $title = RequestMethods::get("title", $file);
+        $data = array(
+            "title" => $title,
+            "comment" => "Downloaded From letmusicplay.in"
+        );
+        // id3_set_tag($file, $data, ID3_V1_0);
+        $title .= ".{$extension}"; $this->_update($youtubeid);
+        
+        if (file_exists($file)) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="' . basename($title) . '"');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($file));
+            readfile($file);
+            exit;
+        }
+    }
+
+    protected function _update($youtubeid) {
+        $downloads = Registry::get("MongoDB")->downloads;
+        $record = $downloads->findOne(array('youtube_id' => $youtubeid));
+        if (!isset($record)) {
+            $downloads->insert([
+                'youtube_id' => $youtubeid,
+                'created' => new \MongoDate(),
+                'count' => 1
+            ]);
+        } else {
+            $count = $record['count'];
+            $downloads->update(['youtube_id' => $youtubeid], ['$set' => ['count' => (int) $count + 1]]);
+        }
     }
 
     public function trending() {

@@ -1,15 +1,25 @@
 <div role="main" class="ui-content">
-    <p>
-        <a href="/" class="ui-btn ui-btn-inline ui-icon-home ui-btn-icon-left ui-mini">Home</a>
-    </p>
+    <img src>
     <div data-role="body">
-        <a href="#popupVideo" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-btn-inline">Launch video player</a>
+        <img src="http://img.youtube.com/vi/{echo $id}/mqdefault.jpg" alt="">
+        <a href="#popupVideo" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-right">Launch video player</a>
         <div data-role="popup" id="popupVideo" data-overlay-theme="b" data-theme="a" data-tolerance="15,15" class="ui-content">
             <iframe src="https://www.youtube.com/embed/{echo $id}" width="497" height="298" seamless=""></iframe>
         </div>
+        <a href="/music/download/mp3/{echo $id}?title={echo $title}" class="ui-btn ui-btn-b" data-ajax="false">Download MP3</a>
+        <ul data-role="listview" data-inset="true">
+            <li data-theme="b">
+                Video Quality
+            </li>
+            {foreach $format in $formats} {foreach $f in $format}
+            
+                <li>
+                    <a href="/music/download/{echo $f}/{echo $id}?ext={echo $f_i}&amp;title={echo $title}" data-ajax="false">
+                        {echo substr($title, 0, 10)} .. - {echo $format_i}.{echo $f_i}
+                    </a>
+                </li>
+            {/foreach} {/foreach}
+        </ul>
     </div>
-    <div data-role="footer">
-        <a href="#" class="ui-btn ui-corner-all ui-btn-inline ui-mini footer-button-left ui-btn-icon-left ui-icon-power">Quit</a>
-        <a href="#" class="ui-btn ui-corner-all ui-btn-inline ui-mini footer-button-right ui-btn-icon-right ui-icon-carat-r">Next</a>
-    </div>
+    <br><br><br>
 </div>

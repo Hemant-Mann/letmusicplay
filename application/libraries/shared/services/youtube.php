@@ -3,6 +3,7 @@
 namespace Shared\Services;
 use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
+use YTDownloader\Service\Download as Downloader;
 
 class Youtube {
 	/**
@@ -31,7 +32,7 @@ class Youtube {
                     "title" => $title,
                     "id" => $href
                 );
-                $results[] = ArrayMethods::toObject($d);
+                $results[$d['id']] = ArrayMethods::toObject($d);
             }
             return $results;
         } catch (Google_Service_Exception $e) {
@@ -40,4 +41,33 @@ class Youtube {
         	return "Error";
         }
 	}
+
+    /**
+     * @return array
+     */
+    public static function formats($id = '') {
+        $url = "https://www.youtube.com/watch?v=";
+        try {
+            $ytdl = new Downloader($url . $id);
+            return $ytdl->availableQualities();
+        } catch (\Exception $e) {
+            return array();
+        }
+    }
+
+    public static function download($id = '', $opts = array()) {
+        $url = "https://www.youtube.com/watch?v=";
+        $ytdl = new Downloader($url . $id);
+        switch ($opts['action']) {
+            case 'video':
+                $file = $ytdl->download($opts['fmt'], $opts['extension']);
+                break;
+
+            default:
+                $file = $ytdl->convert();
+                break;
+        }
+        $file = Downloader::getDownloadPath() . $file;
+        return $file;
+    }
 }
