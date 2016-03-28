@@ -25,7 +25,7 @@ class Controller extends \Framework\Controller {
             $property = "set" . ucfirst($key);
             $seo->$property($value);
         }
-        $params["view"]->set("seo", $seo);
+        $this->layoutView->set("seo", $seo);
     }
 
     public function noview() {
@@ -58,14 +58,14 @@ class Controller extends \Framework\Controller {
     public function __construct($options = array()) {
         parent::__construct($options);
 
-        /*$mongoDB = Registry::get("MongoDB");
+        $mongoDB = Registry::get("MongoDB");
         if (!$mongoDB) {
             $mongo = new \MongoClient();
             $mongoDB = $mongo->selectDB("letmusicplay");
             Registry::set("MongoDB", $mongoDB);
         }
 
-        // schedule: load user from session           
+        /*// schedule: load user from session           
         Events::add("framework.router.beforehooks.before", function($name, $parameters) {
             $session = Registry::get("session");
             $controller = Registry::get("controller");
