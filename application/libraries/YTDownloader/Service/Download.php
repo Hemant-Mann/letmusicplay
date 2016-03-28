@@ -95,7 +95,7 @@ class Download {
 			if (isset($match[1])) {
 				$code = (int) substr($value, 0, 3);
 
-				if (!preg_match("/DASH\s(video|audio)/", $value)) {
+				if (!preg_match("/(DASH\s(video|audio))|only/", $value)) {
 					preg_match("/^[0-9]{0,3}\s*(\w+)/", $value, $f);
 					$this->_formats[$match[1]][$f[1]] = $code;	
 				}
