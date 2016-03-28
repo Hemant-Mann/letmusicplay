@@ -1,18 +1,13 @@
 <div role="main" class="ui-content">
     <p>
-        Search for "{echo $query}"
         <a href="/" class="ui-btn ui-btn-inline ui-icon-home ui-btn-icon-left ui-mini">Home</a>
     </p>
-    <ul data-role="listview" data-inset="true">
-        {foreach $s in $songs}
-        <li>
-            <a href="/music/view/{echo \Framework\StringMethods::url($s->title)}/{echo $s->id}">
-            <img src="{echo $s->img}">
-            <h2>{echo $s->title}</h2>
-        </a>
-        </li>
-        {/foreach}
-    </ul>
+    <div data-role="body">
+        <a href="#popupVideo" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-btn-inline">Launch video player</a>
+        <div data-role="popup" id="popupVideo" data-overlay-theme="b" data-theme="a" data-tolerance="15,15" class="ui-content">
+            <iframe src="https://www.youtube.com/embed/{echo $id}" width="497" height="298" seamless=""></iframe>
+        </div>
+    </div>
     <div data-role="footer">
         <a href="#" class="ui-btn ui-corner-all ui-btn-inline ui-mini footer-button-left ui-btn-icon-left ui-icon-power">Quit</a>
         <a href="#" class="ui-btn ui-corner-all ui-btn-inline ui-mini footer-button-right ui-btn-icon-right ui-icon-carat-r">Next</a>

@@ -8,3 +8,7 @@
     top: auto !important;
     width: 100%;
 }
+
+iframe {
+    border: none;
+}

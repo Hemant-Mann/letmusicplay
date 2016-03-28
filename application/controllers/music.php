@@ -7,6 +7,7 @@
  */
 use Shared\Controller as Controller;
 use Framework\Registry as Registry;
+use Framework\RequestMethods as RequestMethods;
 
 class Music extends Controller {
     /**
@@ -26,13 +27,28 @@ class Music extends Controller {
     }
 
     public function search() {
-       $this->seo(array("title" => "Music Search"));
+        $this->seo(array("title" => "Music Search"));
         $view = $this->getActionView();
+
+        $q = RequestMethods::get("q");
+        $results = Shared\Services\Youtube::search($q);
+        if (is_string($results)) {
+            $songs = array();
+        } else {
+            $songs = $results;
+        }
+        $view->set("songs", $songs)
+            ->set("query", $q);
     }
 
-    public function view($title='', $id='') {
+    public function view($title = '', $id = null) {
     	$this->seo(array("title" => "Music Search"));
         $view = $this->getActionView();
+
+        if (!$id) $this->redirect("/");
+        
+        $view->set("title", $title)
+            ->set("id", $id);
     }
 
     public function convert($youtubeid='') {
