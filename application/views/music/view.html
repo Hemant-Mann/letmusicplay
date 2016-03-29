@@ -1,12 +1,13 @@
 <div role="main" class="ui-content">
+{include music/modals/error.html}
     <img src>
     <div data-role="body">
         <img src="http://img.youtube.com/vi/{echo $id}/mqdefault.jpg" alt="">
         <a href="#popupVideo" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-right">Launch video player</a>
         <div data-role="popup" id="popupVideo" data-overlay-theme="b" data-theme="a" data-tolerance="15,15" class="ui-content">
-            <iframe src="https://www.youtube.com/embed/{echo $id}" width="497" height="298" seamless=""></iframe>
+            <!-- <iframe src="https://www.youtube.com/embed/{echo $id}" width="497" height="298" seamless=""></iframe> -->
         </div>
-        <a href="/music/download/mp3/{echo $id}?title={echo $title}" class="ui-btn ui-btn-b" data-ajax="false">Download MP3</a>
+        <a href="/music/download/mp3/{echo $id}?title={echo $title}" class="downloadThis ui-btn ui-btn-b" data-ajax="false">Download MP3</a>
         <ul data-role="listview" data-inset="true">
             <li data-theme="b">
                 Video Quality
@@ -14,7 +15,7 @@
             {foreach $format in $formats} {foreach $f in $format}
             
                 <li>
-                    <a href="/music/download/{echo $f}/{echo $id}?ext={echo $f_i}&amp;title={echo $title}" data-ajax="false">
+                    <a href="/music/download/{echo $f}/{echo $id}?ext={echo $f_i}&amp;title={echo $title}" class="downloadThis" data-ajax="false">
                         {echo substr($title, 0, 10)} .. - {echo $format_i}.{echo $f_i}
                     </a>
                 </li>

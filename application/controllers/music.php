@@ -84,9 +84,12 @@ class Music extends Controller {
             "comment" => "Downloaded From letmusicplay.in"
         );
         // id3_set_tag($file, $data, ID3_V1_0);
-        $title .= ".{$extension}"; $this->_update($youtubeid);
-        
-        if (file_exists($file)) {
+        $title .= ".{$extension}";
+        $headers = getallheaders();
+        if (isset($headers['X-Requested-With'])) {
+            $this->_update($youtubeid);
+            echo "success";
+        } elseif (file_exists($file)) {
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
             header('Content-Disposition: attachment; filename="' . basename($title) . '"');
