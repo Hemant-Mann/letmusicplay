@@ -62,6 +62,14 @@ $(document).ready(function() {
             }
         });
     });
+
+    var loc = window.location.pathname;
+    if (loc.match('/music/view')) {
+        var s = loc.split("/"),
+            title = s[3];
+
+        $('title').html(title);
+    }
 });
 
 $(document).on('pagecreate', function () {

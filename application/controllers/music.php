@@ -82,9 +82,9 @@ class Music extends Controller {
         $title = RequestMethods::get("title", $file);
         $data = array(
             "title" => $title,
-            "comment" => "Downloaded From letmusicplay.in"
+            "comment" => "letmusicplay.in"
         );
-        // id3_set_tag($file, $data, ID3_V1_0);
+        $result = id3_set_tag($file, $data);
         $title .= ".{$extension}";
         $headers = getallheaders();
         if (isset($headers['X-Requested-With'])) {
