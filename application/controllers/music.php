@@ -76,7 +76,8 @@ class Music extends Controller {
                 'extension' => $extension
             ]);
         } catch (\Exception $e) {
-            $this->redirect("/404");
+            echo $e->getMessage();
+            return;
         }
         $title = RequestMethods::get("title", $file);
         $data = array(
@@ -90,12 +91,14 @@ class Music extends Controller {
             $this->_update($youtubeid);
             echo "success";
         } elseif (file_exists($file)) {
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+            header("Cache-Control: private",false);
+            header('Pragma: public');
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
             header('Content-Disposition: attachment; filename="' . basename($title) . '"');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
+            header("Content-Transfer-Encoding: binary");
             header('Content-Length: ' . filesize($file));
             readfile($file);
             exit;

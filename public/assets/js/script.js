@@ -46,14 +46,19 @@ $(document).on('pagecreate', '#myPage', function() {
 $(document).ready(function() {
     $('.downloadThis').bind('click', function (e, ui) {
         e.preventDefault();
-        var self = $(this);
+        var self = $(this),
+            html = self.html();
+
+        self.html('Please wait while we downloading your file');
         Request.get({
             action: self.attr('href')
         }, function (data) {
             if (data == "success") {
+                self.html("Download Done! Try Again?");
                 window.location.href = self.attr('href');
             } else {
-                $('downloadError').popup('open');
+                self.html(html);
+                $('#downloadError').popup('open');
             }
         });
     });

@@ -110,11 +110,10 @@ class Download {
 		Regex::validate(array('extension' => $fmt));
 		$filename = $this->_videoId . ".{$fmt}";
 		$this->_converted = self::$_root . $filename;
-		if (file_exists($this->_converted)) {
-			return;
+		if (!file_exists($this->_converted)) {
+			$this->_download();
+			Convert::To($fmt, $this->_file, $this->_converted);
 		}
-		$this->_download();
-		Convert::To($fmt, $this->_file, $this->_converted);
 		return $filename;
 	}
 
