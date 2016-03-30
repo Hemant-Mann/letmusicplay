@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="{echo $seo->getDescription()}">
     <meta name="author" content="{echo $seo->getAuthor()}">
+    <meta property="og:image" content="{echo $seo->getPhoto()}">
     <title>{echo $seo->getTitle()}</title>
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
     <link rel="stylesheet" type="text/css" href="{echo CDN}css/style.css">
     <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <style>
+        .btn-primary {
+            background-color: #337ab7; color: white;
+        }
+    </style>
 </head>
 
 <body>
@@ -22,7 +28,7 @@
         </div>
     </div>
     <script src="{echo CDN}js/request.js"></script>
-    <script type="text/javascript" src="{echo CDN}js/script-1.0.js"></script>
+    <script type="text/javascript" src="{echo CDN}js/script-1.1.js"></script>
 </body>
 
 </html>

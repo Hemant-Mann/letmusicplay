@@ -63,13 +63,15 @@ $(document).ready(function() {
         });
     });
 
-    var loc = window.location.pathname;
-    if (loc.match('/music/view')) {
-        var s = loc.split("/"),
-            title = s[3];
+    $(".fbshare").click(function (e) {
+        e.preventDefault();
+        var self = $(this);
+        self.addClass('disabled');
+        ouvre("https://www.facebook.com/sharer/sharer.php?u=" + self.attr('href'));
+        self.removeClass('disabled');
+    });
 
-        $('title').html(title);
-    }
+
 });
 
 $(document).on('pagecreate', function () {
@@ -113,3 +115,7 @@ $(document).on('pagecreate', function () {
         }
     });
 });
+
+function ouvre(fichier) {
+    ff=window.open(fichier,"popup","width=600px,height=300px,left=50%,top=50%");
+}

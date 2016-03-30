@@ -6,14 +6,14 @@
     <ul id="autocomplete" data-role="listview" data-inset="true" data-filter="true" data-input="#autocomplete-input"></ul>
     
     <ul data-role="listview" data-inset="true" data-filter="false" >
-        <li data-theme="b"><a href="#">Most Searched</a></li>
-   
-        <li><a href="#">To be updated from MongoDB</a></li>
-    
-        <li><a href="#">To be updated from MongoDB</a></li>
-    
-        <li><a href="#">To be updated from MongoDB</a></li>
-    
-        <li><a href="#">To be updated from MongoDB</a></li>
+        <li data-theme="b"><a href="#">Most Downloaded</a></li>
+        {foreach $s in $songs}
+        <li>
+            <a href="/music/view/{echo \Framework\StringMethods::url($s->title)}/{echo $s->youtube_id}">
+                <img src="{echo $s->img}" alt="">
+                {echo $s->title}
+            </a>
+        </li>
+        {/foreach}
     </ul>
 </div>
