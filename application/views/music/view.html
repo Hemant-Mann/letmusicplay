@@ -1,8 +1,9 @@
 <div role="main" class="ui-content">
 {include music/modals/error.html}
     <div data-role="body">
-        <img src="/home/image/{echo $id}.jpg" alt="">
-        <a href="#popupVideo" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-right">Launch video player</a>
+        <a href="#popupVideo" data-rel="popup" data-position-to="window">
+            <img src="/home/image/{echo $id}/mqdefault.jpg" alt="">
+        </a>
         <div data-role="popup" id="popupVideo" data-overlay-theme="b" data-theme="a" data-tolerance="15,15" class="ui-content">
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
             <iframe src="https://www.youtube.com/embed/{echo $id}" width="497" height="298" seamless=""></iframe>

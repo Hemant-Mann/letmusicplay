@@ -10,11 +10,11 @@ use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
 
 class Home extends Controller {
-	public function image($id = null) {
+	public function image($id = null, $type = "hqdefault") {
 		$this->noview();
 		header ("Cache-Control: max-age=6000");
 		if (isset($id)) {
-			$url = "http://img.youtube.com/vi/$id/hqdefault.jpg";
+			$url = "http://img.youtube.com/vi/$id/{$type}.jpg";
 			$ctype = "image/jpeg";
 
 			header('Content-type: ' . $ctype);

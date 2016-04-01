@@ -20,7 +20,12 @@
 
 <body>
     <div data-role="page">
-    	{include layouts/navigation/standard.html}
+    	<div data-role="header" data-theme="b">
+            <h1>
+                {echo substr($seo->getTitle(), 0, 50)}
+            </h1>
+            <a href="/" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-search">Search</a>
+        </div>
     	{ayield action}
         
         <div data-role="footer" data-theme="b">
