@@ -40,11 +40,19 @@ $(document).on('pagecreate', '#myPage', function() {
             });
         }
     });
-
 });
 
 $(document).ready(function() {
+    $(".fbshare").click(function (e) {
+        e.preventDefault();
+        var self = $(this);
+        self.addClass('disabled');
+        ouvre("https://www.facebook.com/sharer/sharer.php?u=" + self.attr('href'));
+        self.removeClass('disabled');
+    });
+
     $('.downloadThis').bind('click', function (e, ui) {
+        e.stopImmediatePropagation();
         e.preventDefault();
         var self = $(this),
             html = self.html();
@@ -62,16 +70,6 @@ $(document).ready(function() {
             }
         });
     });
-
-    $(".fbshare").click(function (e) {
-        e.preventDefault();
-        var self = $(this);
-        self.addClass('disabled');
-        ouvre("https://www.facebook.com/sharer/sharer.php?u=" + self.attr('href'));
-        self.removeClass('disabled');
-    });
-
-
 });
 
 $(document).on('pagecreate', function () {

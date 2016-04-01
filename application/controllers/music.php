@@ -88,16 +88,16 @@ class Music extends Controller {
         $title .= ".{$extension}";
         $headers = getallheaders();
         if (isset($headers['X-Requested-With'])) {
-            $this->_update($youtubeid);
             echo "success";
         } elseif (file_exists($file)) {
+            $this->_update($youtubeid);
             header('Expires: 0');
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
             header("Cache-Control: private",false);
             header('Pragma: public');
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename="' . basename($title) . '"');
+            header('Content-Disposition: attachment; filename="' . "LetMusicPlay.in" . basename($title) . '"');
             header("Content-Transfer-Encoding: binary");
             header('Content-Length: ' . filesize($file));
             readfile($file);

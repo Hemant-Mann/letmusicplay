@@ -62,11 +62,16 @@ class Download {
 		$file = self::$_root . $fileName;
 
 		if (!file_exists($file)) {
-			$cmd = "youtube-dl -f {$code} -o $file " . $this->_url;
+			$cmd = "youtube-dl -f {$code} -o $file --max-filesize 300M " . $this->_url;
 			exec($cmd, $output, $return);
 
 			if ($return != 0) {
 				throw new YTDL("Can't download video");
+			}
+
+			$output_string = implode(" ", $output);
+			if (preg_match("/aborting/i", $output_string)) {
+				throw new YTDL("File size exceeds the limit", 1);
 			}
 		}
 		$this->_file = $file;
