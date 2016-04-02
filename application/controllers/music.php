@@ -28,7 +28,7 @@ class Music extends Controller {
     }
 
     public function search() {
-        $this->seo(array("title" => "Music Search"));
+        $this->seo(array("title" => $query));
         $view = $this->getActionView();
 
         $q = RequestMethods::get("q");

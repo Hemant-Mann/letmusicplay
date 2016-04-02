@@ -1,12 +1,4 @@
 <div role="main" class="ui-content">
-    <p>
-        Search for "{echo $query}"
-        <a href="/" class="ui-btn ui-btn-inline ui-icon-home ui-btn-icon-left ui-mini">Home</a>
-    </p>
-    <form class="ui-filterable" action="/music/search" method="get">
-        <input type="search" name="q" data-type="search" value="{echo $query}" placeholder="Search a song...">
-        <button type="submit" class="btn btn-primary"> Go</button>
-    </form>
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <!-- Letplaymusic2 -->
     <ins class="adsbygoogle"
@@ -17,18 +9,28 @@
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+    <form class="ui-filterable" action="/music/search" method="get">
+        <input type="search" name="q" data-type="search" value="{echo $query}" placeholder="Search a song...">
+        <button type="submit" class="btn btn-primary"> Go</button>
+    </form>
     <ul data-role="listview" data-inset="true">
         {foreach $s in $songs}
         <li>
-            <a href="/music/view/{echo \Framework\StringMethods::url($s->title)}/{echo $s->id}">
+            <a href="/music/view/{echo \Framework\StringMethods::url($s->title)}/{echo $s->id}" data-ajax="false">
             <img src="{echo $s->img}">
             <h2>{echo $s->title}</h2>
         </a>
         </li>
         {/foreach}
     </ul>
-    <div data-role="footer">
-        <a href="#" class="ui-btn ui-corner-all ui-btn-inline ui-mini footer-button-left ui-btn-icon-left ui-icon-power">Quit</a>
-        <a href="#" class="ui-btn ui-corner-all ui-btn-inline ui-mini footer-button-right ui-btn-icon-right ui-icon-carat-r">Next</a>
-    </div>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- Letplaymusic2 -->
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:320px;height:100px"
+         data-ad-client="ca-pub-5478316641755579"
+         data-ad-slot="8943052046"
+         data-ad-format="auto"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
 </div>
