@@ -89,20 +89,75 @@ class Music extends Controller {
         $headers = getallheaders();
         if (isset($headers['X-Requested-With'])) {
             echo "success";
-        } elseif (file_exists($file)) {
+        } else {
             $this->_update($youtubeid);
-            header('Expires: 0');
+            /*header('Expires: 0');
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
             header("Cache-Control: private",false);
             header('Pragma: public');
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename="' . "LetMusicPlay.in" . basename($title) . '"');
+            header('Content-Disposition: attachment; filename="' . "LetMusicPlay.in--" . basename($title) . '"');
             header("Content-Transfer-Encoding: binary");
             header('Content-Length: ' . filesize($file));
             readfile($file);
-            exit;
+            exit;*/
+            $this->_smartReadFile($file, "LetMusicPlay.in--" . basename($title));
         }
+    }
+
+    protected function _smartReadFile($location, $filename, $mimeType='application/octet-stream') {
+        if (!file_exists($location)) {
+            header ("HTTP/1.0 404 Not Found");
+            return;
+        }
+      
+        $size = filesize($location);
+        $time = date('r', filemtime($location));
+
+        $fm = @fopen($location,'rb');
+        if (!$fm) {
+            header ("HTTP/1.0 505 Internal server error");
+            return;
+        }
+
+        $begin = 0;
+        $end = $size;
+
+        if (isset($_SERVER['HTTP_RANGE'])) { 
+            if (preg_match('/bytes=\h*(\d+)-(\d*)[\D.*]?/i', $_SERVER['HTTP_RANGE'], $matches)) { 
+                $begin = intval($matches[0]);
+
+                if(!empty($matches[1])) {
+                    $end = intval($matches[1]);
+                }
+            }
+        }
+      
+        if ($begin > 0 || $end < $size)
+            header('HTTP/1.0 206 Partial Content');
+        else
+            header('HTTP/1.0 200 OK');  
+
+        header("Content-Type: $mimeType"); 
+        header('Cache-Control: public, must-revalidate, max-age=0');
+        header('Pragma: no-cache');  
+        header('Accept-Ranges: bytes');
+        header('Content-Length:'. ($end - $begin));
+        header("Content-Range: bytes $begin-$end/$size");
+        header('Content-Disposition: inline; filename="'.$filename.'"');
+        header("Content-Transfer-Encoding: binary\n");
+        header("Last-Modified: $time");
+        header('Connection: close');  
+
+        $cur = $begin;
+        fseek($fm, $begin, 0);
+
+        while(!feof($fm) && $cur < $end && (connection_status() == 0)) {
+            print fread($fm, min(1024 * 16, $end - $cur));
+            $cur += 1024 * 16;
+        }
+        exit;
     }
 
     protected function _update($youtubeid) {
