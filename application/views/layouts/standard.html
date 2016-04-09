@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="{echo $seo->getDescription()}">
     <meta name="author" content="{echo $seo->getAuthor()}">
-    <meta property="og:image" content="{echo $seo->getPhoto()}">
+    <meta property="fb:app_id" content="105562456511213" />
+    <meta property="og:type"   content="website" />
+    <meta property="og:title" content="{echo $seo->getTitle()}" />
+    <meta property="og:url" content="{echo URL}" />
+    <meta property="og:image" content="{echo $seo->getPhoto()}" />
+    
     <title>{echo $seo->getTitle()}</title>
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
     <link rel="stylesheet" type="text/css" href="{echo CDN}css/style.css">
