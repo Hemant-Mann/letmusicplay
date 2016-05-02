@@ -44,6 +44,13 @@ class Controller extends \Framework\Controller {
         exit();
     }
 
+    protected function log($message = "") {
+        $logfile = APP_PATH . "/logs/" . date("Y-m-d") . ".txt";
+        $timestamp = strftime("%Y-%m-%d %H:%M:%S", time());
+        $content = "[{$timestamp}] {$message}" . PHP_EOL;
+        file_put_contents($logfile, $content, FILE_APPEND);
+    }
+
     public function setUser($user) {
         $session = Registry::get("session");
         if ($user) {

@@ -80,16 +80,15 @@ class Music extends Controller {
             return;
         }
         $title = RequestMethods::get("title", $file);
-        $data = array(
-            "title" => $title,
-            "comment" => "letmusicplay.in"
-        );
-        $result = id3_set_tag($file, $data);
+        $referer = RequestMethods::server("HTTP_REFERER", "");
+
         $title .= ".{$extension}";
         $headers = getallheaders();
         if (isset($headers['X-Requested-With'])) {
             echo "success";
-        } else {
+        } else if (stristr($referer, "http://" . $_SERVER["HTTP_HOST"] . "/")) {
+            $cmd = '/usr/local/bin/node ' . APP_PATH . '/application/libraries/Music/index.js ' . $youtubeid;
+            exec($cmd, $output, $return);
             $this->_update($youtubeid);
             /*header('Expires: 0');
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
@@ -103,6 +102,8 @@ class Music extends Controller {
             readfile($file);
             exit;*/
             $this->_smartReadFile($file, "LetMusicPlay.in--" . basename($title));
+        } else {
+            $this->redirect("/404");
         }
     }
 
