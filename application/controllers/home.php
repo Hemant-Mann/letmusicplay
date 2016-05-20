@@ -10,6 +10,7 @@ use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
 
 class Home extends Controller {
+
 	public function image($id = null, $type = "hqdefault") {
 		$this->noview();
 		header ("Cache-Control: max-age=6000");
@@ -53,6 +54,11 @@ class Home extends Controller {
         }
 
     	$view->set("songs", $result);
+    }
+
+    public function dmca() {
+        $layoutView = $this->getLayoutView();
+        $layoutView->set("seo", Framework\Registry::get("seo"));
     }
 
 }

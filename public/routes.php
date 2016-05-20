@@ -12,6 +12,11 @@ $routes = array(
         "pattern" => "home",
         "controller" => "home",
         "action" => "index"
+    ),
+    array(
+        "pattern" => "dmca",
+        "controller" => "home",
+        "action" => "dmca"
     )
 );
 

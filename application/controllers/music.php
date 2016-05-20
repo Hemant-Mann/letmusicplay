@@ -181,4 +181,9 @@ class Music extends Controller {
         $view = $this->getActionView();
     }
 
+    public function api() {
+        $this->seo(array("title" => "API for mp3 and video downloads"));
+        $view = $this->getActionView();
+    }
+
 }
