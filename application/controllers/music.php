@@ -63,7 +63,7 @@ class Music extends Controller {
     public function download($fmt = 18, $youtubeid = '') {
         $this->noview();
 
-        $extension = RequestMethods::get("ext", "mp3");
+        $extension = RequestMethods::get("ext", "mp4");
         if (preg_match('/[a-z]/i', $fmt)) {
             $fmt = "mp3"; $action = "mp3";
         } else {

@@ -118,6 +118,7 @@ class Download {
 		if (!file_exists($this->_converted)) {
 			$this->_download();
 			Convert::To($fmt, $this->_file, $this->_converted);
+			@unlink($this->_file);
 		}
 		return $filename;
 	}
