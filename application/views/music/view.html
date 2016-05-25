@@ -24,7 +24,7 @@
             <li data-theme="b">
                 Video Quality
             </li>
-            <li><a href="/music/download/mp3/{echo $id}?title={echo $title}" class="downloadThis" data-ajax="false">Download MP3</a></li>
+            <li><a href="/music/download/mp3/{echo $id}?title={echo $title}&amp;ext=mp3" class="downloadThis" data-ajax="false">Download MP3</a></li>
             {foreach $format in $formats} {foreach $f in $format}
             
                 <li>

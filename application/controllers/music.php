@@ -44,7 +44,7 @@ class Music extends Controller {
     }
 
     public function view($title = '', $id = null) {
-    	$this->seo(array("title" => "Download " .$title. " video and mp3", "description" => "Download mp3 and Video Song ". $title. " all quality for free and save in 240p, 360p, 720p, 1080p", "photo" => "http://letmusicplay.in/home/image/{$id}.jpg"));
+    	$this->seo(array("title" => "Download " .$title. " video and mp3", "description" => "Download mp3 and Video of ". $title. " all quality for free and save in 240p, 360p, 720p, 1080p", "photo" => "http://letmusicplay.in/home/image/{$id}.jpg"));
         $view = $this->getActionView();
 
         if (!$id) $this->redirect("/");
