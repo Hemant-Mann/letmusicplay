@@ -56,13 +56,14 @@ $(document).ready(function() {
         e.preventDefault();
         var self = $(this),
             html = self.html();
-
-        self.html('Please wait while we downloading your file');
+        self.addClass('disabled');
+        self.html('Please wait while we are downloading your file');
         Request.get({
             action: self.attr('href')
         }, function (data) {
             if (data == "success") {
-                self.html("Download Done! Try Again?");
+                self.removeClass('disabled');
+                self.html("Clicks here if Download does not starts");
                 window.location.href = self.attr('href');
             } else {
                 self.html(html);

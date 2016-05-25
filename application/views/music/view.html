@@ -8,7 +8,7 @@
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
             <iframe src="https://www.youtube.com/embed/{echo $id}" width="497" height="298" seamless=""></iframe>
         </div>
-        <a href="/music/download/mp3/{echo $id}?title={echo $title}&amp;ext=mp3" class="downloadThis ui-btn ui-btn-b" data-ajax="false">Download MP3</a>
+        <a href="#popupVideo" data-rel="popup" data-position-to="window" class="ui-btn ui-btn-b" >Play Video</a>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <!-- Letplaymusic1 -->
         <ins class="adsbygoogle"
@@ -24,6 +24,7 @@
             <li data-theme="b">
                 Video Quality
             </li>
+            <li><a href="/music/download/mp3/{echo $id}?title={echo $title}" class="downloadThis" data-ajax="false">Download MP3</a></li>
             {foreach $format in $formats} {foreach $f in $format}
             
                 <li>
