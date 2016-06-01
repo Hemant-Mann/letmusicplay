@@ -9,9 +9,13 @@ use Shared\Controller as Controller;
 use Framework\Registry as Registry;
 use Framework\RequestMethods as RequestMethods;
 use Shared\Services\Youtube as Youtube;
+use Framework\StringMethods as StringMethods;
 
 class Account extends Controller {
 
+	/**
+	 * @before _secure
+	 */
 	public function index() {
 		$this->seo(array("title" => "Profile"));
 		$view = $this->getActionView();
@@ -23,17 +27,28 @@ class Account extends Controller {
 
 		if (RequestMethods::post("action") == "create") {
 			$users = Registry::get("MongoDB")->users;
-			$record = $users->findOne(array('email' => RequestMethods::post("email")));
-			if (!isset($record)) {
-			    $users->insert([
-			        'name' => RequestMethods::post("name"),
-			        'email' => RequestMethods::post("email"),
-			        'password' => RequestMethods::post("name"),
-			        'created' => new \MongoDate(),
-			        'live' => 1
-			    ]);
-			    $view->set("message", "User Registered Successfully");
+			
+			try {
+				$email = RequestMethods::post("email", "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$");
+				$password = RequestMethods::post("password");
+				
+				$record = $users->findOne(array('email' => $email));
+				if (!isset($record)) {
+					$password = StringMethods::encrypt($password);
+
+					$users->insert([
+					    'name' => RequestMethods::post("name", "[a-zA-Z]+\s+[a-zA-Z]+"),
+					    'email' => $email,
+					    'password' => $password,
+					    'created' => new \MongoDate(),
+					    'live' => 1
+					]);
+				    $view->set("message", "User Registered Successfully");
+				}
+			} catch (\Exception $e) {
+				$view->set("message", $e->getMessage());
 			}
+			
 		}
 	}
 

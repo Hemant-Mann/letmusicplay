@@ -11,13 +11,14 @@ namespace Shared;
 use Framework\Events as Events;
 use Framework\Router as Router;
 use Framework\Registry as Registry;
+use Framework\ArrayMethods as ArrayMethods;
 
 class Controller extends \Framework\Controller {
 
     /**
      * @readwrite
      */
-    protected $_user;
+    protected $_user = false;
 
     public function seo($params = array()) {
         $seo = Registry::get("seo");
@@ -31,6 +32,12 @@ class Controller extends \Framework\Controller {
     public function noview() {
         $this->willRenderLayoutView = false;
         $this->willRenderActionView = false;
+    }
+
+    public function _secure() {
+        if (!$this->user) {
+            $this->redirect("/404");
+        }
     }
 
     public function JSONview() {
@@ -54,7 +61,7 @@ class Controller extends \Framework\Controller {
     public function setUser($user) {
         $session = Registry::get("session");
         if ($user) {
-            $session->set("user", $user->id);
+            $session->set("user", $user->_id);
         } else {
             $session->erase("user");
         }
@@ -72,13 +79,16 @@ class Controller extends \Framework\Controller {
             Registry::set("MongoDB", $mongoDB);
         }
 
-        /*// schedule: load user from session           
+        // schedule: load user from session           
         Events::add("framework.router.beforehooks.before", function($name, $parameters) {
             $session = Registry::get("session");
             $controller = Registry::get("controller");
             $user = $session->get("user");
+
+            $users = Registry::get("MongoDB")->users;
             if ($user) {
-                $controller->user = \Models\User::first(array("id = ?" => $user));
+                $record = $users->findOne(['_id' => $user]);
+                $controller->user = ArrayMethods::toObject($record);
             }
         });
 
@@ -87,9 +97,9 @@ class Controller extends \Framework\Controller {
             $session = Registry::get("session");
             $controller = Registry::get("controller");
             if ($controller->user) {
-                $session->set("user", $controller->user->id);
+                $session->set("user", $controller->user->_id);
             }
-        });*/
+        });
     }
 
     /**

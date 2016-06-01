@@ -1,14 +1,21 @@
 <div role="main" class="ui-content">
 	<h1>Create Account</h1>
-	<form>
+	{if isset($message)}
+	<div>
+		{echo $message}
+	</div>
+	{/if}
+	<form method="post">
 		<label for="text-basic">Name</label>
-		<input type="text" name="text-basic" placeholder="your full name">
+		<input type="text" name="name" pattern="[a-zA-Z]+\s+[a-zA-Z]+" placeholder="your full name" required="">
 
 		<label for="text-basic">Email:</label>
-		<input type="email" name="text-basic" placeholder="your primary email">
+		<input type="email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="your primary email" required="">
 
 		<label for="password">Password:</label>
-		<input type="password" name="password" id="password" value="" autocomplete="off">
+		<input type="password" name="password" id="password" value="" autocomplete="off" required="">
+
+		<input type="hidden" name="action" value="create">
 
 		<button type="submit" class="ui-btn ui-corner-all">Submit</button>
 	</form>
