@@ -32,7 +32,7 @@ class Home extends Controller {
     	$view = $this->getActionView();
 
     	$collection = Registry::get("MongoDB")->downloads;
-    	$before = strtotime("-10 day");
+    	$before = strtotime("-30 day");
     	$cursor = $collection->find(array('created' => array(
     		'$gt' => new \MongoDate($before),
     		'$lte' => new \MongoDate()
@@ -47,7 +47,7 @@ class Home extends Controller {
             $response = $curl->response;
 
             $result[] = ArrayMethods::toObject([
-                'youtube_id' => $c['youtube_id'],
+                'id' => $c['youtube_id'],
                 'title' => $response->title,
                 'img' => '/home/image/' . $c['youtube_id'] . '.jpg'
             ]);
