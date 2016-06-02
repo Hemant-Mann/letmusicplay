@@ -32,17 +32,18 @@ class Account extends Controller {
 				$email = RequestMethods::post("email", "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$");
 				$password = RequestMethods::post("password");
 				
-				$record = $users->findOne(array('email' => $email));
-				if (!isset($record)) {
+				$user = Models\User::first(array('email' => $email));
+				if (!$user) {
 					$password = StringMethods::encrypt($password);
 
-					$users->insert([
-					    'name' => RequestMethods::post("name", "[a-zA-Z]+\s+[a-zA-Z]+"),
+					$user = new Models\User([
+						'name' => RequestMethods::post("name", "[a-zA-Z]+\s+[a-zA-Z]+"),
 					    'email' => $email,
 					    'password' => $password,
-					    'created' => new \MongoDate(),
 					    'live' => 1
 					]);
+					$user->save();
+
 				    $view->set("message", "User Registered Successfully");
 				}
 			} catch (\Exception $e) {

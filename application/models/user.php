@@ -3,10 +3,10 @@
 /**
  * The User Model
  *
- * @author Faizan Ayubi
+ * @author Hemant Mann
  */
 namespace Models;
-class User extends Shared\Model {
+class User extends \Shared\MongoModel {
 
     /**
      * @column
@@ -17,18 +17,7 @@ class User extends Shared\Model {
      * @validate required, alpha, min(3), max(32)
      * @label first name
      */
-    protected $_first;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 100
-     * 
-     * @validate required, alpha, min(3), max(32)
-     * @label last name
-     */
-    protected $_last;
+    protected $_name;
 
     /**
      * @column
