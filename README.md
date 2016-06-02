@@ -5,6 +5,7 @@
 To view the JSON Data an extra header must be sent with every request
 ```
 X-JSON-Api: SwiftMVC
+X-Api-Key: {key}
 ```
 
 ### Most Downloaded

@@ -45,6 +45,8 @@ class Account extends Controller {
 					$user->save();
 
 				    $view->set("message", "User Registered Successfully");
+				} else {
+					$view->set("message", "User already registered!!");
 				}
 			} catch (\Exception $e) {
 				$view->set("message", $e->getMessage());
@@ -53,8 +55,28 @@ class Account extends Controller {
 		}
 	}
 
+	/**
+	 * @before _secure
+	 */
 	public function apikey() {
 		$this->seo(array("title" => "Generate API Key"));
 		$view = $this->getActionView();
+
+		$confirm = RequestMethods::post("confirm");
+		$key = Models\ApiKey::first(['user_id' => $this->user->_id]);
+
+		if (RequestMethods::post("action") == "generate" && $confirm == "go" && !$key) {
+			$key = uniqid() . StringMethods::uniqueRandomString(44);
+
+			$apikey = new Models\ApiKey([
+				'user_id' => $this->user->_id,
+				'key' => $key
+			]);
+			$apikey->save();
+
+			$key = $apikey;
+		}
+
+		$view->set('key', $key);
 	}
 }

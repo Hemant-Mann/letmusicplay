@@ -10,6 +10,10 @@ namespace Shared {
     use Framework\Registry as Registry;
 
     class MongoModel extends \Framework\Model {
+        /**
+         * @read
+         */
+        protected $_types = array("autonumber", "text", "integer", "decimal", "boolean", "datetime", "date", "time", "mongoid");
 
         /**
          * @column
@@ -65,6 +69,7 @@ namespace Shared {
                 $doc['created'] = new \MongoDate();
 
                 $collection->insert($doc);
+                $this->_id = $doc['_id'];
             } else {                
                 $collection->update(['_id' => $this->_id], ['$set' => $doc]);
             }
@@ -130,7 +135,7 @@ namespace Shared {
             $collection = Registry::get("MongoDB")->$table;
 
             if (empty($fields)) {
-                $record = $collection->findOne($where);   
+                $record = $collection->findOne($where); 
             } else {
                 $record = $collection->findOne($where, $fields);
             }

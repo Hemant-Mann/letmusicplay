@@ -71,6 +71,10 @@ $(document).ready(function() {
             }
         });
     });
+
+    $("#showApiKey").bind("click", function(event, ui) {
+        $("#apiKey").attr('type', 'text');
+    });
 });
 
 $(document).on('pagecreate', function () {

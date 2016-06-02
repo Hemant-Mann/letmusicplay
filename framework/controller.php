@@ -145,8 +145,12 @@ namespace Framework {
                 if ($doAction) {
                     $view = $this->actionView;
 
-                    $headers = getallheaders(); $api = isset($headers['X-JSON-Api']) && $headers['X-JSON-Api'] == 'SwiftMVC';
-                    if ($this->defaultExtension == "json" && $api) {
+                    $headers = getallheaders();
+                    $api = isset($headers['X-JSON-Api']) && $headers['X-JSON-Api'] == 'SwiftMVC';
+                    $key = isset($headers['X-Api-Key']) ? $headers['X-Api-Key'] : false;
+                    $apiKey = \Models\ApiKey::first(['key' => $key]);
+
+                    if ($this->defaultExtension == "json" && $api && $apiKey) {
                         $obj = array();
                         $data = $view->data;
 
