@@ -28,7 +28,7 @@
                         <label class="sr-only">Sign</label>
                         <select name="sign" class="form-control" value="{echo $sign}">
                             <option value="equal">Equal</option>
-                            <option value="like">Like</option>
+                            <!-- <option value="like">Like</option> -->
                         </select>
                     </div>
                 </div>
@@ -76,8 +76,8 @@
                                     <td>{echo htmlspecialchars($item[$value])}</td>
                                 {/foreach}
                                 <td>
-                                    <a href="/admin/update/{echo $model}/{echo $item['id']}" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i> Edit</a>
-                                    <a href="/admin/delete/{echo $model}/{echo $item['id']}" class="btn btn-danger btn-xs"><i class="fa fa-edit"></i> Delete</a>
+                                    <a href="/admin/update/{echo $model}/{echo $item['_id']}" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i> Edit</a>
+                                    <a href="/admin/delete/{echo $model}/{echo $item['_id']}" class="btn btn-danger btn-xs"><i class="fa fa-edit"></i> Delete</a>
                                 </td>
                                 </tr>
                             {/foreach}

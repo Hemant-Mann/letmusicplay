@@ -17,6 +17,11 @@ $routes = array(
         "pattern" => "dmca",
         "controller" => "home",
         "action" => "dmca"
+    ),
+    array(
+        "pattern" => "users/manage",
+        "controller" => "auth",
+        "action" => "manageUsers"
     )
 );
 

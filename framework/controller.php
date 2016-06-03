@@ -132,6 +132,47 @@ namespace Framework {
             return new Exception\Implementation("{$method} method not implemented");
         }
 
+        public function renderJSONFields($data) {
+            $obj = array();
+            foreach ($data as $keys => $values) {
+                switch (gettype($values)) {
+                    case 'object':
+                        if (get_class($values) == "stdClass") {
+                            $obj[$keys] = $values;
+                        } elseif (is_a($values, 'Framework\Model')) {
+                            $obj[$keys] = $values->getJsonData();
+                        } else {
+                            $obj[$keys] = $values;
+                        }
+                        break;
+                    case 'array':
+                        foreach ($values as $key => $value) {
+                            if (gettype($value) == "object") {
+                                if (get_class($value) == "stdClass") {
+                                    $obj[$keys][] = $value;
+                                } elseif (is_a($value, 'Framework\Model')) {
+                                    $obj[$keys][] = $value->getJsonData();
+                                } else {
+                                    $obj[$keys][] = $value;
+                                }
+                            } else{
+                                $obj[$keys] = $values;
+                            }
+                        }
+                        break;
+                    case 'string':
+                    case 'integer':
+                        $obj[$keys] = $values;
+                        break;
+
+                    default:
+                        break;
+
+                }
+            }
+            return $obj;
+        }
+
         public function render() {
             Events::fire("framework.controller.render.before", array($this->name));
 
@@ -149,49 +190,20 @@ namespace Framework {
                     $api = isset($headers['X-JSON-Api']) && $headers['X-JSON-Api'] == 'SwiftMVC';
                     $key = isset($headers['X-Api-Key']) ? $headers['X-Api-Key'] : false;
                     $apiKey = \Models\ApiKey::first(['key' => $key]);
+                    $apirequest = $api && $apiKey;
 
-                    if ($this->defaultExtension == "json" && $api && $apiKey) {
-                        $obj = array();
-                        $data = $view->data;
+                    if ($this->defaultExtension == "json") {
+                        $isAdmin = $this->user && $this->user->admin;
+                        if (!$apirequest && !$isAdmin) {
+                            $obj = array("error" => "Invalid API Key");
+                        } elseif ($isAdmin || $apirequest) {
+                            $data = $view->data;
 
-                        if ($data) {
-                            foreach ($data as $keys => $values) {
-                                switch (gettype($values)) {
-                                    case 'object':
-                                        if (get_class($values) == "stdClass") {
-                                            $obj[$keys] = $values;
-                                        } elseif (is_a($values, 'Framework\Model')) {
-                                            $obj[$keys] = $values->getJsonData();
-                                        } else {
-                                            $obj[$keys] = $values;
-                                        }
-                                        break;
-                                    case 'array':
-                                        foreach ($values as $key => $value) {
-                                            if (gettype($value) == "object") {
-                                                if (get_class($value) == "stdClass") {
-                                                    $obj[$keys][] = $value;
-                                                } elseif (is_a($value, 'Framework\Model')) {
-                                                    $obj[$keys][] = $value->getJsonData();
-                                                } else {
-                                                    $obj[$keys][] = $value;
-                                                }
-                                            } else{
-                                                $obj[$keys] = $values;
-                                            }
-                                        }
-                                        break;
-                                    case 'string':
-                                    case 'integer':
-                                        $obj[$keys] = $values;
-                                        break;
-
-                                    default:
-                                        break;
-
-                                }
+                            if ($data) {
+                                $obj = $this->renderJSONFields($data);
                             }
                         }
+
                         echo json_encode($obj, JSON_PRETTY_PRINT);
                     }
 

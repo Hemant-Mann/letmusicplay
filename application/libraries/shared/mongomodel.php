@@ -75,6 +75,12 @@ namespace Shared {
             }
         }
 
+        public function getTable() {
+            $table = parent::getTable();
+            $collection = Registry::get("MongoDB")->$table;
+            return $collection;
+        }
+
         /**
          * @param array $where ['name' => 'something']
          * @param array $fields ['name' => true, '_id' => true]
@@ -89,8 +95,7 @@ namespace Shared {
         }
 
         protected function _all($where = array(), $fields = array(), $order = null, $direction = null, $limit = null, $page = null) {
-            $table = $this->getTable();
-            $collection = Registry::get("MongoDB")->$table;
+            $collection = $this->getTable();
 
             if (empty($fields)) {
                 $cursor = $collection->find($where);
@@ -112,7 +117,7 @@ namespace Shared {
 
             $results = [];
             foreach ($cursor as $c) {
-                $results[] = $this->convert($c);
+                $results[] = $this->_convert($c);
             }
             return $results;
         }
@@ -131,8 +136,7 @@ namespace Shared {
         }
 
         protected function _first($where = array(), $fields = array()) {
-            $table = $this->getTable();
-            $collection = Registry::get("MongoDB")->$table;
+            $collection = $this->getTable();
 
             if (empty($fields)) {
                 $record = $collection->findOne($where); 
@@ -140,10 +144,10 @@ namespace Shared {
                 $record = $collection->findOne($where, $fields);
             }
 
-            return $this->convert($record);
+            return $this->_convert($record);
         }
 
-        protected function convert($record) {
+        protected function _convert($record) {
             if (!$record) return null;
             $columns = $this->getColumns();
 
@@ -153,6 +157,37 @@ namespace Shared {
                 $c->$key = $record[$key];
             }
             return $c;
+        }
+
+        public function delete() {
+            $collection = $this->getTable();
+
+            $return = $collection->remove(['_id' => $this->_id], ['justOne' => true]);
+            if ($return !== true) {
+                throw new \Exception("Error Deleting the record");
+            }
+        }
+
+        public static function deleteAll($query = []) {
+            $instance = new static();
+            $collection = $instance->getTable();
+
+            $return = $collection->remove($query);
+            if ($return !== true) {
+                throw new \Exception("Error in deleteAll");
+            }
+        }
+
+        public static function count($query = []) {
+            $model = new static();
+            return $model->_count($query);
+        }
+
+        protected function _count($query = []) {
+            $collection = $this->getTable();
+
+            $count = $collection->count($query);
+            return $count;
         }
     }
 }

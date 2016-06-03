@@ -15,9 +15,11 @@ class Auth extends \Shared\Controller {
 	 * @protected
 	 */
 	public function _admin() {
+		$this->_secure();
 		if (!isset($this->user->admin)) {
 			$this->redirect("/");
 		}
+		$this->setLayout("layouts/admin");
 	}
 
 	/**
@@ -72,4 +74,68 @@ class Auth extends \Shared\Controller {
 		session_destroy();
 		$this->redirect("/");
 	}
+
+	/**
+	 * @before _admin
+	 */
+	public function manageUsers() {
+		$this->seo(["title" => "Manage Users"]);
+		$view = $this->getActionView();
+		$page = RequestMethods::get("page", 1);
+        $limit = RequestMethods::get("limit", 10);
+
+        $property = RequestMethods::get("property", "live");
+        $val = RequestMethods::get("value", 1);
+
+		$where = ["{$property}" => $val];
+        $users = Models\User::all($where, [], "created", -1, $limit, $page);
+        $count = Models\User::count($where);
+        $view->set([
+            "users" => $users,
+            "page" => $page,
+            "limit" => $limit,
+            "count" => $count,
+            "property" => $property,
+            "val" => $val
+        ]);
+	}
+
+	/**
+     * @before _secure
+     */
+    public function authenticate() {
+        $this->willRenderLayoutView = false;
+        $view = $this->getActionView(); $session = Registry::get("session");
+        $redirect = $session->get('Authenticate:$redirect');
+        if (!$redirect) {
+            $this->redirect("/404");
+        }
+
+        $tries_key = 'Auth\SudoMode:$tries';
+        $tries = $session->get($tries_key, 1);
+
+        $proceed = false;
+        if (!isset($_COOKIE['sudo_mode']) && RequestMethods::post("action") == "verify") {
+            $password = RequestMethods::post("password");
+            if ($tries >= 3) {
+                $session->erase($tries_key);
+                $this->redirect("/auth/logout");
+            }
+
+            if (StringMethods::checkHash($password, $this->user->password)) {
+                setcookie('sudo_mode', 'enabled', time() + 60 * 30);
+                $session->set('Authenticate:$done', true);
+                $proceed = true;
+            } else {
+                $session->set($tries_key, ++$tries);
+                $view->set("error", "Authentication failed");
+            }
+        } elseif ($_COOKIE['sudo_mode'] == 'enabled') {
+            $proceed = true;
+        }
+
+        if ($proceed) {
+            $this->redirect($redirect);
+        }
+    }
 }

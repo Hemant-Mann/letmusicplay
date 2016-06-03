@@ -10,16 +10,6 @@ use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
 
 class Admin extends Auth {
-    /**
-     * @protected
-     * @override
-     */
-    public function _admin() {
-        $this->_secure();
-        parent::_admin();
-        
-        $this->setLayout("layouts/admin");
-    }
 
     /**
      * @before _admin
@@ -59,13 +49,9 @@ class Admin extends Auth {
         ]);
         if ($model) {
             $model = "Models\\". $model;
-            if ($sign == "like") {
-                $where = array("{$property} LIKE ?" => "%{$val}%");
-            } else {
-                $where = array("{$property} = ?" => $val);
-            }
+            $where = array("{$property}" => $val);
 
-            $objects = $model::all($where, array("*"), "created", "desc", $limit, $page);
+            $objects = $model::all($where, array(), "created", -1, $limit, $page);
             $count = $model::count($where);
             $i = 0;
             if ($objects) {
@@ -105,14 +91,14 @@ class Admin extends Auth {
         $view->set("model", $model);
 
         $model = "Models\\". $model;
-        $object = $model::first(array("id = ?" => $id));
+        $object = $model::first(array("_id" => new \MongoId($id)));
         $properties = $object->getJsonData();
         foreach ($properties as $key => $property) {
             $key = substr($key, 1);
             if (strpos($key, "_id")) {
                 $child = ucfirst(substr($key, 0, -3));
                 $child = "Models\\" . $child;
-                $childobj = $child::first(array("id = ?" => $object->$key));
+                $childobj = $child::first(array("_id" => $object->$key));
                 $childproperties = $childobj->getJsonData();
                 foreach ($childproperties as $k => $prop) {
                     $k = substr($k, 1);
@@ -140,7 +126,7 @@ class Admin extends Auth {
         $view = $this->getActionView();
 
         $model = "Models\\". $table;
-        $object = $model::first(array("id = ?" => $id));
+        $object = $model::first(array("_id" => new \MongoId($id)));
 
         $vars = $object->columns;
         $array = array();
@@ -161,7 +147,7 @@ class Admin extends Auth {
             "vars" => $vars,
             "array" => $array,
             "model" => $table,
-            "id" => $id
+            "_id" => $id
         ));
     }
 
@@ -179,7 +165,13 @@ class Admin extends Auth {
         $view = $this->getActionView();
 
         $model = "Models\\". $model;
-        $object = $model::first(array("id = ?" => $id));
+        $object = $model::first(array("_id" => new \MongoId($id)));
+
+        if (is_numeric($value)) {
+            $value = (int) $value;
+        } elseif (is_bool($value)) {
+            $value = (bool) $value;
+        }
         $object->$property = $value;
         $object->save();
 
@@ -200,8 +192,8 @@ class Admin extends Auth {
         $this->JSONview();
         
         $model = "Models\\" . $model;
-        $object = $model::first(array("id = ?" => $id));
-        if ($object->id != $this->user->id && strtolower($model) != 'models\user') {
+        $object = $model::first(array("_id" => new \MongoId($id)));
+        if ($object->_id != $this->user->_id && strtolower($model) != 'models\user') {
             $object->delete();
             $view->set("deleted", true);   
         }
@@ -296,8 +288,8 @@ class Admin extends Auth {
             $this->redirect("/auth/authenticate");
         }
 
-        $user = Models\User::first(["id = ?" => $user_id]);
-        if (!$user || $user->id == $this->user->id) {
+        $user = Models\User::first(["_id" => new \MongoId($user_id)]);
+        if (!$user || $user->_id == $this->user->_id) {
             $this->redirect("/404");
         }
 
@@ -307,12 +299,10 @@ class Admin extends Auth {
 
             $klass = new $m();
             if (property_exists($klass, "_user_id")) {
-                $find = $m::all(["user_id = ?" => $user->id]);
-                foreach ($find as $r) {
-                    // $r->delete();
-                }
+                // $find = $m::deleteAll(["user_id" => $user->_id]);
             }
         }
+        // $user->delete();
         $this->redirect("/admin");
     }
 
@@ -323,5 +313,4 @@ class Admin extends Auth {
             $this->sync($value);
         }
     }
-
 }
