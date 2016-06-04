@@ -14,6 +14,11 @@ $routes = array(
         "action" => "index"
     ),
     array(
+        "pattern" => "logout",
+        "controller" => "auth",
+        "action" => "logout"
+    ),
+    array(
         "pattern" => "dmca",
         "controller" => "home",
         "action" => "dmca"

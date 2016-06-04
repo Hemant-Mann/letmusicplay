@@ -5,13 +5,12 @@
  *
  * @author Faizan Ayubi, Hemant Mann
  */
-use Shared\Controller as Controller;
 use Framework\Registry as Registry;
 use Framework\RequestMethods as RequestMethods;
 use Shared\Services\Youtube as Youtube;
 use Framework\StringMethods as StringMethods;
 
-class Account extends Controller {
+class Account extends Auth {
 
 	/**
 	 * @before _secure
@@ -21,13 +20,14 @@ class Account extends Controller {
 		$view = $this->getActionView();
 	}
 	
+	/**
+	 * @before _session
+	 */
 	public function create() {
 		$this->seo(array("title" => "Create Account"));
 		$view = $this->getActionView();
 
 		if (RequestMethods::post("action") == "create") {
-			$users = Registry::get("MongoDB")->users;
-			
 			try {
 				$email = RequestMethods::post("email", "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$");
 				$password = RequestMethods::post("password");

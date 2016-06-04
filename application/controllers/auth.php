@@ -16,7 +16,7 @@ class Auth extends \Shared\Controller {
 	 */
 	public function _admin() {
 		$this->_secure();
-		if (!isset($this->user->admin)) {
+		if (!$this->user->admin) {
 			$this->redirect("/");
 		}
 		$this->setLayout("layouts/admin");
@@ -25,7 +25,7 @@ class Auth extends \Shared\Controller {
 	/**
 	 * @protected
 	 */
-	public function session() {
+	public function _session() {
 		if ($this->user) {
 			if (isset($this->user->admin)) {
 				$redirect = "/admin";
@@ -38,7 +38,7 @@ class Auth extends \Shared\Controller {
 	}
 
 	/**
-	 * @before session
+	 * @before _session
 	 */
 	public function login() {
 		$this->willRenderLayoutView = false;

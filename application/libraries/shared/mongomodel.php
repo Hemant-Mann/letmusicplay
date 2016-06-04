@@ -54,8 +54,7 @@ namespace Shared {
             $columns = $this->getColumns();
             $this->_modified = new \MongoDate();
 
-            $table = $this->getTable();
-            $collection = Registry::get("MongoDB")->$table;
+            $collection = $this->getTable();
 
             $doc = [];
             foreach ($columns as $key => $value) {
