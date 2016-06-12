@@ -21,7 +21,7 @@ namespace Shared {
          * @primary
          * @type autonumber
          */
-        protected $__id = false;
+        protected $__id = null;
 
         /**
          * @column
@@ -29,21 +29,21 @@ namespace Shared {
          * @type boolean
          * @index
          */
-        protected $_live = true;
+        protected $_live = null;
 
         /**
          * @column
          * @readwrite
          * @type datetime
          */
-        protected $_created;
+        protected $_created = null;
 
         /**
          * @column
          * @readwrite
          * @type datetime
          */
-        protected $_modified;
+        protected $_modified = null;
 
         /**
          * Every time a row is created these fields should be populated with default values.
@@ -51,14 +51,13 @@ namespace Shared {
         public function save() {
             $primary = $this->getPrimaryColumn();
             $raw = $primary["raw"];
-            $columns = $this->getColumns();
-            $this->_modified = new \MongoDate();
-
             $collection = $this->getTable();
 
-            $doc = [];
+            $doc = []; $columns = $this->getColumns();
             foreach ($columns as $key => $value) {
-                $doc[$key] = $this->$value['raw'];
+                if (isset($this->$value['raw'])) {
+                    $doc[$key] = $this->_convertToType($this->$value['raw'], $value['type']);
+                }
             }
             if (isset($doc['_id'])) {
                 unset($doc['_id']);
@@ -69,15 +68,59 @@ namespace Shared {
 
                 $collection->insert($doc);
                 $this->_id = $doc['_id'];
-            } else {                
+            } else {
+                $doc['modified'] = new \MongoDate();
                 $collection->update(['_id' => $this->_id], ['$set' => $doc]);
             }
+        }
+
+        /**
+         * Specific types are needed for MongoDB
+         */
+        protected function _convertToType($value, $type) {
+            switch ($type) {
+                case 'text':
+                    $value = (string) $value;
+                    break;
+
+                case 'integer':
+                    $value = (int) $value;
+                    break;
+
+                case 'boolean':
+                    $value = (boolean) $value;
+                    break;
+
+                case 'decimal':
+                    $value = (float) $value;
+                    break;
+
+                case 'datetime':
+                case 'date':
+                    $value = new \MongoDate($value);
+                    break;
+                
+                default:
+                    $value = (string) $value;
+                    break;
+            }
+            return $value;
         }
 
         public function getTable() {
             $table = parent::getTable();
             $collection = Registry::get("MongoDB")->$table;
             return $collection;
+        }
+
+        protected function _updateQuery($where) {
+            $columns = $this->getColumns();
+
+            $query = [];
+            foreach ($where as $key => $value) {
+                $query[$key] = $this->_convertToType($value, $columns[$key]['type']);
+            }
+            return $query;
         }
 
         /**
@@ -90,6 +133,7 @@ namespace Shared {
          */
         public static function all($where = array(), $fields = array(), $order = null, $direction = null, $limit = null, $page = null) {
             $model = new static();
+            $where = $model->_updateQuery($where);
             return $model->_all($where, $fields, $order, $direction, $limit, $page);
         }
 
@@ -131,6 +175,7 @@ namespace Shared {
          */
         public static function first($where = array(), $fields = array()) {
             $model = new static();
+            $where = $model->_updateQuery($where);
             return $model->_first($where, $fields);
         }
 
@@ -169,6 +214,7 @@ namespace Shared {
 
         public static function deleteAll($query = []) {
             $instance = new static();
+            $where = $instance->_updateQuery($query);
             $collection = $instance->getTable();
 
             $return = $collection->remove($query);
@@ -179,6 +225,7 @@ namespace Shared {
 
         public static function count($query = []) {
             $model = new static();
+            $where = $model->_updateQuery($query);
             return $model->_count($query);
         }
 
@@ -187,6 +234,25 @@ namespace Shared {
 
             $count = $collection->count($query);
             return $count;
+        }
+
+        /**
+         * @param \Shared\Model $model A SQL model
+         * @param array $exclude Fields to be excluded from duplicating (optional)
+         * Duplicates a SQL Model in MongoDB
+         */
+        public function duplicate(\Shared\Model $model, $exclude = []) {
+            $fields = $model->getColumns();
+            if (!empty($exclude)) {
+                foreach ($exclude as $key => $value) {
+                    unset($fields[$value]);
+                }
+            }
+
+            foreach ($fields as $key => $value) {
+                $this->$key = $model->$key;
+            }
+            $this->save();
         }
     }
 }
