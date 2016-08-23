@@ -62,7 +62,7 @@ class Download {
 		$file = self::$_root . $fileName;
 
 		if (!file_exists($file)) {
-			$cmd = "youtube-dl -f {$code} -o $file --max-filesize 300M " . $this->_url;
+			$cmd = "/usr/local/bin/youtube-dl --no-warnings -f {$code} -o $file --max-filesize 300M " . $this->_url;
 			exec($cmd, $output, $return);
 
 			if ($return != 0) {
@@ -83,7 +83,7 @@ class Download {
 	 * parses the result using regular expression
 	 */
 	protected function _availableQualities() {
-		$cmd = "youtube-dl -F --no-warnings ". $this->_url;
+		$cmd = "/usr/local/bin/youtube-dl -F --no-warnings ". $this->_url;
 		exec($cmd, $output, $return);
 		
 		if ($return != 0) {
