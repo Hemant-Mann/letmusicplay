@@ -2,6 +2,9 @@
 namespace YTDownloader\Helper;
 
 class Video {
+	protected static $AUDIO = [
+		'-1' => 0, '249' => 1, '250' => 2, '140' => 3, '171' => 4, '251' => 5, '141' => 6
+	];
 	private function __construct() {
 		// do nothing
 	}
@@ -38,5 +41,18 @@ class Video {
 		    return $matches[1];
 		}
 		return false;
+	}
+
+	public static function getCode($str) {
+		$code = (int) substr($str, 0, 3);
+
+		return $code;
+	}
+
+	public static function compare($curr, $old) {
+		if (self::$AUDIO[$curr] > self::$AUDIO[$old]) {
+			return $curr;
+		}
+		return $old;
 	}
 }

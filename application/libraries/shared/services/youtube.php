@@ -49,9 +49,10 @@ class Youtube {
         $url = "https://www.youtube.com/watch?v=";
         try {
             $ytdl = new Downloader($url . $id);
-            return $ytdl->availableQualities();
+            $video = $ytdl->availableQualities();
+            return ['video' => $video, 'audio' => $ytdl->bestMp3];
         } catch (\Exception $e) {
-            return array();
+            return ['video' => [], 'audio' => 140];
         }
     }
 
@@ -63,8 +64,8 @@ class Youtube {
                 $file = $ytdl->download($opts['fmt'], $opts['extension']);
                 break;
 
-            default:
-                $file = $ytdl->convert();
+            case 'audio':
+                $file = $ytdl->convert($opts['extension'], $opts['fmt']);
                 break;
         }
         $file = Downloader::getDownloadPath() . $file;

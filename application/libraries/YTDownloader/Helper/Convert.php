@@ -21,9 +21,9 @@ class Convert {
 		// do nothing
 	}
 
-	public static function To($fmt, $inFile, $outFile) {
-		if (in_array($fmt, self::$_supportedFormats['audio']) || in_array($fmt, self::$_supportedFormats['video'])) {
-			$cmd = "ffmpeg -i {$inFile} -b:a 256K {$outFile}";
+	public static function To($extension, $inFile, $outFile) {
+		if (in_array($extension, self::$_supportedFormats['audio']) || in_array($extension, self::$_supportedFormats['video'])) {
+			$cmd = "ffmpeg -i {$inFile} -vn -ab 256k -ar 44100 -y {$outFile}";
 			exec($cmd, $output, $return);
 			if ($return !== 0) {
 				throw new \YTDownloader\Exceptions\Core("Unable to convert the file");

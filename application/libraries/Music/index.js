@@ -26,7 +26,7 @@ fs.stat(filename, function (err, stat) {
 });
 
 function writeTags(data) {
-	var imageUrl = 'http://img.youtube.com/vi/' + videoId + '/mqdefault.jpg';
+	var imageUrl = 'http://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
 
 	request(imageUrl)
 		.pipe(fs.createWriteStream(__dirname + '/tmp/' + videoId + '.jpg'))
@@ -36,7 +36,7 @@ function writeTags(data) {
 			var meta = new id3.Meta({
 			    artist: data.author_name,
 			    title: data.title,
-			    album: 'letmusicplay.in',
+			    album: data.author_name,
 			    desc: 'Downloaded from letmusicplay.in',
 			    genre: 'letmusicplay.in',
 			    comment: 'Downloaded from letmusicplay.in'

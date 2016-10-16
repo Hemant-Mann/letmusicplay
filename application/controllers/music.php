@@ -50,9 +50,10 @@ class Music extends Controller {
 
         if (!$id) $this->redirect("/");
         
-        $formats = Youtube::formats($id);
+        $qualities = Youtube::formats($id);
         $view->set("title", $title)
-            ->set("formats", $formats)
+            ->set("formats", $qualities['video'])
+            ->set("mp3", $qualities['audio'])
             ->set("id", $id);
     }
 
@@ -65,10 +66,14 @@ class Music extends Controller {
         $this->noview();
 
         $extension = RequestMethods::get("ext", "mp4");
-        if (preg_match('/[a-z]/i', $fmt)) {
-            $fmt = "mp3"; $action = "mp3";
-        } else {
-            $action = "video";
+        switch ($extension) {
+            case 'mp4':
+                $action = "video";
+                break;
+            
+            case 'mp3':
+                $action = "audio";
+                break;
         }
         try {
             $file = Youtube::download($youtubeid, [
