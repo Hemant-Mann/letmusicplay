@@ -190,7 +190,8 @@ namespace Framework {
                 if ($doAction) {
                     $view = $this->actionView;
 
-                    $headers = getallheaders();
+                    $headers = (function_exists('getallheaders')) ? getallheaders() : array();
+
                     $api = isset($headers['X-JSON-Api']) && $headers['X-JSON-Api'] == 'SwiftMVC';
                     $key = isset($headers['X-Api-Key']) ? $headers['X-Api-Key'] : false;
                     $apiKey = \Models\ApiKey::first(['key' => $key]);

@@ -4,17 +4,52 @@
  * @author Hemant Mann
  */
 class Cron extends \Framework\Controller {
-	/**
-	 * @before _secure
-	 */
-	public function index() {
-		$this->_log("Cron JOB Started");
-		$this->_removeFiles();
+
+	public function __construct($options = array()) {
+        parent::__construct($options);
+        $this->willRenderLayoutView = false;
+        $this->willRenderActionView = false;
+
+        if (php_sapi_name() != 'cli') {
+            $this->_404();
+        }
+    }
+
+	public function index($type = "daily") {
+		switch ($type) {
+            case 'hourly':
+                $this->_hourly();
+                break;
+
+            case 'daily':
+                $this->_daily();
+                break;
+
+            case 'weekly':
+                $this->_weekly();
+                break;
+
+            case 'monthly':
+                $this->_monthly();
+                break;
+        }
 	}
 
+	protected function _daily() {
+		$this->_log("Cron Started!!");
+		$this->_removeFiles();
+		$this->_log("Cron End!!");
+
+	}
+
+	protected function _hourly() {}
+	protected function _weekly() {}
+	protected function _monthly() {}
+
+
 	protected function _removeFiles() {
-		$path = APP_PATH . "/application/libraries/YTDownloader/downloads/*";
-		$cmd = "find $path -mtime +30 -exec rm {} \;"
+		$path = APP_PATH . "/application/libraries/YTDownloader/downloads/";
+		$cmd = "find $path -mtime +2 -exec rm '{}' +";
 		exec($cmd, $output, $return);
 
 		if ($return === 0) {
@@ -22,15 +57,6 @@ class Cron extends \Framework\Controller {
 		} else {
 			$this->_log("***** Failed to remove files ******");
 		}
-	}
-
-	/**
-	 * @protected
-	 */
-	public function _secure() {
-		if (php_sapi_name() !== 'cli') {
-            $this->redirect("/404");
-        }
 	}
 
 	protected function _log($message = "") {
