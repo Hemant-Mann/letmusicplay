@@ -25,12 +25,12 @@ $(document).on('pagecreate', '#myPage', function() {
             $ul.html("<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>");
             $ul.listview('refresh');
 
-            Request.get({
+            request.get({
                 action: 'music/search',
                 data: {
                     q: $input.val()
                 }
-            }, function(response) {
+            }, function(err, response) {
                 $.each(response, function(i, val) {
                     html += "<li>" + val + "</li>";
                 });
@@ -58,9 +58,9 @@ $(document).ready(function() {
             html = self.html();
         self.addClass('disabled');
         self.html('Please wait while we are downloading your file');
-        Request.get({
+        request.get({
             action: self.attr('href')
-        }, function (data) {
+        }, function (err, data) {
             if (data == "success") {
                 self.removeClass('disabled');
                 self.html("Clicks here if Download does not starts");

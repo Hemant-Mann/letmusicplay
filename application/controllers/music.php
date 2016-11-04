@@ -96,21 +96,26 @@ class Music extends Controller {
             $cmd = '/usr/local/bin/node ' . APP_PATH . '/application/libraries/Music/index.js ' . $youtubeid;
             exec($cmd, $output, $return);
             $this->_update($youtubeid);
-            /*header('Expires: 0');
-            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-            header("Cache-Control: private",false);
-            header('Pragma: public');
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename="' . "LetMusicPlay.in--" . basename($title) . '"');
-            header("Content-Transfer-Encoding: binary");
-            header('Content-Length: ' . filesize($file));
-            readfile($file);
-            exit;*/
+
+            // $this->_sendFile($file, $title);
             $this->_smartReadFile($file, "LetMusicPlay.in--" . basename($title));
         } else {
             $this->redirect("/404");
         }
+    }
+
+    protected function _sendFile($file, $title) {
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header("Cache-Control: private",false);
+        header('Pragma: public');
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . "LetMusicPlay.in--" . basename($title) . '"');
+        header("Content-Transfer-Encoding: binary");
+        header('Content-Length: ' . filesize($file));
+        readfile($file);
+        exit;
     }
 
     protected function _smartReadFile($location, $filename, $mimeType='application/octet-stream') {
