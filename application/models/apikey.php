@@ -6,12 +6,12 @@
  * @author Hemant Mann
  */
 namespace Models;
-class ApiKey extends \Shared\MongoModel {
+class ApiKey extends \Shared\Model {
 
     /**
      * @column
      * @readwrite
-     * @type mongoid
+     * @type integer
      * 
      * @validate required
      * @label User ID

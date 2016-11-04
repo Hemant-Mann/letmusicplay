@@ -91,7 +91,7 @@ class Admin extends Auth {
         $view->set("model", $model);
 
         $model = "Models\\". $model;
-        $object = $model::first(array("_id" => new \MongoId($id)));
+        $object = $model::first(array("_id" => $id));
         $properties = $object->getJsonData();
         foreach ($properties as $key => $property) {
             $key = substr($key, 1);
@@ -126,7 +126,7 @@ class Admin extends Auth {
         $view = $this->getActionView();
 
         $model = "Models\\". $table;
-        $object = $model::first(array("_id" => new \MongoId($id)));
+        $object = $model::first(array("_id" => $id));
 
         $vars = $object->columns;
         $array = array();
@@ -165,7 +165,7 @@ class Admin extends Auth {
         $view = $this->getActionView();
 
         $model = "Models\\". $model;
-        $object = $model::first(array("_id" => new \MongoId($id)));
+        $object = $model::first(array("_id" => $id));
 
         if (is_numeric($value)) {
             $value = (int) $value;
@@ -192,7 +192,7 @@ class Admin extends Auth {
         $this->JSONview();
         
         $model = "Models\\" . $model;
-        $object = $model::first(array("_id" => new \MongoId($id)));
+        $object = $model::first(array("_id" => $id));
         if ($object->_id != $this->user->_id && strtolower($model) != 'models\user') {
             $object->delete();
             $view->set("deleted", true);   
@@ -288,7 +288,7 @@ class Admin extends Auth {
             $this->redirect("/auth/authenticate");
         }
 
-        $user = Models\User::first(["_id" => new \MongoId($user_id)]);
+        $user = Models\User::first(["_id" => $user_id]);
         if (!$user || $user->_id == $this->user->_id) {
             $this->redirect("/404");
         }

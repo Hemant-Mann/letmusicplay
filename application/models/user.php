@@ -6,7 +6,7 @@
  * @author Hemant Mann
  */
 namespace Models;
-class User extends \Shared\MongoModel {
+class User extends \Shared\Model {
 
     /**
      * @column

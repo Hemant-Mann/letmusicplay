@@ -168,39 +168,32 @@ class Music extends Controller {
     }
 
     protected function _update($youtubeid) {
-        $downloads = Registry::get("MongoDB")->downloads;
-        $record = $downloads->findOne(array('youtube_id' => $youtubeid));
-        if (!isset($record)) {
-            $downloads->insert([
-                'youtube_id' => $youtubeid,
-                'created' => new \MongoDate(),
-                'count' => 1
+        $r = Models\Download::first(['youtube_id = ?' => $youtubeid]);
+        if (!$r) {
+            $r = new Models\Download([
+                'youtube_id' => $youtubeid
             ]);
-        } else {
-            $count = $record['count'];
-            $downloads->update(['youtube_id' => $youtubeid], ['$set' => ['count' => (int) $count + 1]]);
         }
+        $r->count++;
+        $r->save();
     }
 
     public function trending() {
     	$this->seo(array("title" => "Music | Trending"));
         $view = $this->getActionView();
 
-        $collection = Registry::get("MongoDB")->downloads;
-        $cursor = $collection->find();
-        $cursor->limit(100);
-        $cursor->sort(array('count' => -1));
+        $cursor = Models\Download::all([], ["youtube_id", "created"], "count", "desc", 50, 1);
 
         $curl = new \Curl\Curl(); $result = [];
         foreach ($cursor as $c) {
             // Awesome url gives info about video using VideoID :)
-            $curl->get("https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=". $c['youtube_id']."&format=json");
+            $curl->get("https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=". $c->youtube_id ."&format=json");
             $response = $curl->response;
 
             $result[] = ArrayMethods::toObject([
-                'id' => $c['youtube_id'],
+                'id' => $c->youtube_id,
                 'title' => $response->title,
-                'img' => '/home/image/' . $c['youtube_id'] . '.jpg'
+                'img' => '/home/image/' . $c->youtube_id . '.jpg'
             ]);
         }
 

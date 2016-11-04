@@ -72,23 +72,17 @@ class Controller extends \Framework\Controller {
     public function __construct($options = array()) {
         parent::__construct($options);
 
-        $mongoDB = Registry::get("MongoDB");
-        if (!$mongoDB) {
-            $mongo = new \MongoClient();
-            $mongoDB = $mongo->selectDB("letmusicplay");
-            Registry::set("MongoDB", $mongoDB);
-        }
+        // connect to database
+        $database = Registry::get("database");
+        $database->connect();
 
         // schedule: load user from session           
         Events::add("framework.router.beforehooks.before", function($name, $parameters) {
             $session = Registry::get("session");
             $controller = Registry::get("controller");
             $user = $session->get("user");
-
-            $users = Registry::get("MongoDB")->users;
             if ($user) {
-                $record = $users->findOne(['_id' => $user]);
-                $controller->user = ArrayMethods::toObject($record);
+                $controller->user = \Models\User::first(array("id = ?" => $user));
             }
         });
 
@@ -97,8 +91,14 @@ class Controller extends \Framework\Controller {
             $session = Registry::get("session");
             $controller = Registry::get("controller");
             if ($controller->user) {
-                $session->set("user", $controller->user->_id);
+                $session->set("user", $controller->user->id);
             }
+        });
+
+        // schedule: disconnect from database
+        Events::add("framework.controller.destruct.after", function($name) {
+            $database = Registry::get("database");
+            $database->disconnect();
         });
     }
 

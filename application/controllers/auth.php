@@ -49,8 +49,7 @@ class Auth extends \Shared\Controller {
 			$email = RequestMethods::post("email");
 			$password = RequestMethods::post("password");
 
-			$users = Registry::get("MongoDB")->users;
-			$record = $users->findOne(['email' => $email]);
+			$record = User::first(["email = ?" => $email]);
 
 			if ($record) {
 				$record = ArrayMethods::toObject($record);

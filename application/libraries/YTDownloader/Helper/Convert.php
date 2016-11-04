@@ -23,7 +23,7 @@ class Convert {
 
 	public static function To($extension, $inFile, $outFile) {
 		if (in_array($extension, self::$_supportedFormats['audio']) || in_array($extension, self::$_supportedFormats['video'])) {
-			$cmd = "ffmpeg -i {$inFile} -vn -ab 256k -ar 44100 -y {$outFile}";
+			$cmd = "/usr/local/bin/ffmpeg -i {$inFile} -vn -ab 256K -ar 44100 -y {$outFile}";
 			exec($cmd, $output, $return);
 			if ($return !== 0) {
 				throw new \YTDownloader\Exceptions\Core("Unable to convert the file");

@@ -59,12 +59,17 @@ class Youtube {
     public static function download($id = '', $opts = array()) {
         $url = "https://www.youtube.com/watch?v=";
         $ytdl = new Downloader($url . $id);
+        $file = '';
         switch ($opts['action']) {
             case 'video':
                 $file = $ytdl->download($opts['fmt'], $opts['extension']);
                 break;
 
             case 'audio':
+                $file = $ytdl->convert($opts['extension'], $opts['fmt']);
+                break;
+
+            default:
                 $file = $ytdl->convert($opts['extension'], $opts['fmt']);
                 break;
         }

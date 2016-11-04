@@ -194,7 +194,12 @@ namespace Framework {
 
                     $api = isset($headers['X-JSON-Api']) && $headers['X-JSON-Api'] == 'SwiftMVC';
                     $key = isset($headers['X-Api-Key']) ? $headers['X-Api-Key'] : false;
-                    $apiKey = \Models\ApiKey::first(['key' => $key]);
+
+                    if ($key) {
+                        $apiKey = \Models\ApiKey::first(['key' => $key]);
+                    } else {
+                        $apiKey = null;
+                    }
                     $apirequest = $api && $apiKey;
 
                     if ($this->defaultExtension == "json") {
@@ -207,6 +212,8 @@ namespace Framework {
                             if ($data) {
                                 $obj = $this->renderJSONFields($data);
                             }
+                        } else {
+                            $obj = array();
                         }
 
                         echo json_encode($obj, JSON_PRETTY_PRINT);

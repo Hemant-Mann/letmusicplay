@@ -8,6 +8,7 @@
 use Shared\Controller as Controller;
 use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
+use Models\Download;
 
 class Home extends Controller {
 
@@ -26,30 +27,30 @@ class Home extends Controller {
 		}
 	}
 
-    public function index() {
-    	$layoutView = $this->getLayoutView();
-    	$layoutView->set("seo", Framework\Registry::get("seo"));
-    	$view = $this->getActionView();
+    protected function _seo() {
+        $layoutView = $this->getLayoutView();
+        $layoutView->set("seo", Framework\Registry::get("seo"));
+    }
 
-    	$collection = Registry::get("MongoDB")->downloads;
-    	$before = strtotime("-30 day");
-    	$cursor = $collection->find(array('created' => array(
-    		'$gt' => new \MongoDate($before),
-    		'$lte' => new \MongoDate()
-    	)));
-    	$cursor->limit(10);
-    	$cursor->sort(array('count' => -1));
+    public function index() {
+    	$this->_seo(); $view = $this->getActionView();
+        $yesterday = date('Y-m-d H:i:s', strtotime("-1 day"));
+        $today = date('Y-m-d H:i:s');
+
+        $downloads = Download::all([
+            "created between '$yesterday' and ?" => $today
+        ], ["*"], "count", "desc", 10, 1);
 
         $curl = new \Curl\Curl(); $result = [];
-        foreach ($cursor as $c) {
+        foreach ($downloads as $c) {
             // Awesome url gives info about video using VideoID :)
-            $curl->get("https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=". $c['youtube_id']."&format=json");
+            $curl->get("https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=". $c->youtube_id ."&format=json");
             $response = $curl->response;
 
             $result[] = ArrayMethods::toObject([
-                'id' => $c['youtube_id'],
+                'id' => $c->youtube_id,
                 'title' => $response->title,
-                'img' => '/home/image/' . $c['youtube_id'] . '.jpg'
+                'img' => '/home/image/' . $c->youtube_id . '.jpg'
             ]);
         }
 
@@ -57,8 +58,7 @@ class Home extends Controller {
     }
 
     public function dmca() {
-        $layoutView = $this->getLayoutView();
-        $layoutView->set("seo", Framework\Registry::get("seo"));
+        $this->_seo();
     }
 
 }
