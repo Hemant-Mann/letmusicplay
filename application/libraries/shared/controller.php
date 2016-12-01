@@ -52,7 +52,7 @@ class Controller extends \Framework\Controller {
     }
 
     protected function log($message = "") {
-        $logfile = APP_PATH . "/logs/" . date("Y-m-d") . ".txt";
+        $logfile = sprintf("%s/logs/%s.txt", APP_PATH, date("Y-m-d"));
         $timestamp = strftime("%Y-%m-%d %H:%M:%S", time());
         $content = "[{$timestamp}] {$message}" . PHP_EOL;
         file_put_contents($logfile, $content, FILE_APPEND);
