@@ -6,16 +6,16 @@
     </form>
     <ul data-role="listview" data-inset="true" data-filter="false" >
         <li data-theme="b"><a href="#">Most Downloaded</a></li>
-        {foreach $s in $songs}
+        {{foreach $s in $songs}}
         <li>
-            <a href="/music/view/{echo \Framework\StringMethods::url($s->title)}/{echo $s->id}" data-ajax="false">
-                <img src="{echo $s->img}" alt="">
-                {echo $s->title}
+            <a href="/music/view/{{echo \Framework\StringMethods::url($s->title)}}/{{echo $s->id}}" data-ajax="false">
+                <img src="{{echo $s->img}}" alt="">
+                {{echo $s->title}}
             </a>
         </li>
-        {/foreach}
+        {{/foreach}}
     </ul>
     </script>
 </div>
-<script src="{echo CDN}js/native.js"></script>
-<ins class="byvnative" data-client="pub-57c6c75934243d930c8b4581" data-format="all" data-type="native"></ins>
+<!-- <script src="{echo CDN}js/native.js"></script> -->
+<ins class="byvnative" data-client="pub-580e55dc1d41c8765c2b5d1b" data-format="all" data-type="native"></ins>

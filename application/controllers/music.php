@@ -29,10 +29,10 @@ class Music extends Controller {
     }
 
     public function search() {
-        $this->seo(array("title" => $query));
         $view = $this->getActionView();
 
         $q = RequestMethods::get("q");
+        $this->seo(array("title" => $q));
         $results = Youtube::search($q);
         if (is_string($results)) {
             $songs = array();
@@ -93,12 +93,12 @@ class Music extends Controller {
         if (isset($headers['X-Requested-With'])) {
             echo "success";
         } else if (stristr($referer, "http://" . $_SERVER["HTTP_HOST"] . "/")) {
-            $cmd = '/usr/local/bin/node ' . APP_PATH . '/application/libraries/Music/index.js ' . $youtubeid;
+            $cmd = 'export PATH="/usr/local/bin:$PATH"; /usr/local/bin/node ' . APP_PATH . '/application/libraries/Music/index.js ' . $youtubeid;
             exec($cmd, $output, $return);
             $this->_update($youtubeid);
 
             // $this->_sendFile($file, $title);
-            $this->_smartReadFile($file, "LetMusicPlay.in--" . basename($title));
+            $this->_smartReadFile($file, basename($title));
         } else {
             $this->redirect("/404");
         }
@@ -123,6 +123,9 @@ class Music extends Controller {
             header ("HTTP/1.0 404 Not Found");
             return;
         }
+        // $finalLoc = "/Users/hemant/Downloads/test/downloads/{$filename}";
+        // copy($location, $finalLoc);
+        // $this->redirect("/");
       
         $size = filesize($location);
         $time = date('r', filemtime($location));

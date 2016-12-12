@@ -1,6 +1,6 @@
 <div role="main" class="ui-content">
 	<h1>Generate API Key</h1>
-	{if !$key}
+	{{if !$key}}
 	<form method="post">
 		<input type="checkbox" name="confirm" required="" value="go"> Check this to generate key
 		
@@ -8,8 +8,8 @@
 
 		<button type="submit" class="ui-btn ui-corner-all">Submit</button>
 	</form>
-	{/if} {else}
-	<input type="password" id="apiKey" value="{echo $key->key}">
+	{{/if}} {{else}}
+	<input type="password" id="apiKey" value="{{echo $key->key}}">
 	<button type="button" class="ui-btn ui-corner-all" id="showApiKey">Show Key</button>
-	{/else}
+	{{/else}}
 </div>

@@ -34,7 +34,7 @@ class Home extends Controller {
 
     public function index() {
     	$this->_seo(); $view = $this->getActionView();
-        $yesterday = date('Y-m-d H:i:s', strtotime("-1 day"));
+        $yesterday = date('Y-m-d H:i:s', strtotime("-365 day"));
         $today = date('Y-m-d H:i:s');
 
         $downloads = Download::all([

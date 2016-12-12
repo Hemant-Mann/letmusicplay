@@ -1,10 +1,10 @@
 <div role="main" class="ui-content">
 	<h1>Create Account</h1>
-	{if isset($message)}
+	{{if isset($message)}}
 	<div>
-		{echo $message}
+		{{echo $message}}
 	</div>
-	{/if}
+	{{/if}}
 	<form method="post">
 		<label for="text-basic">Name</label>
 		<input type="text" name="name" pattern="[a-zA-Z]+\s+[a-zA-Z]+" placeholder="your full name" required="">

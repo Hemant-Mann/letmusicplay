@@ -10,18 +10,18 @@
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <form class="ui-filterable" action="/music/search" method="get">
-        <input type="search" name="q" data-type="search" value="{echo $query}" placeholder="Search a song...">
+        <input type="search" name="q" data-type="search" value="{{echo $query}}" placeholder="Search a song...">
         <button type="submit" class="btn btn-primary"> Go</button>
     </form>
     <ul data-role="listview" data-inset="true">
-        {foreach $s in $songs}
+        {{foreach $s in $songs}}
         <li>
-            <a href="/music/view/{echo \Framework\StringMethods::url($s->title)}/{echo $s->id}" data-ajax="false">
+            <a href="/music/view/{{echo \Framework\StringMethods::url($s->title)}}/{{echo $s->id}}" data-ajax="false">
             <img src="{echo $s->img}">
-            <h2>{echo $s->title}</h2>
+            <h2>{{echo $s->title}}</h2>
         </a>
         </li>
-        {/foreach}
+        {{/foreach}}
     </ul>
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <!-- Letplaymusic2 -->
@@ -34,3 +34,5 @@
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 </div>
+<script src="{{echo CDN}}js/native.js"></script>
+<ins class="byvnative" data-client="pub-580e55dc1d41c8765c2b5d1b" data-format="all" data-type="native"></ins>
