@@ -6,7 +6,7 @@
                 <form class="form-inline text-center" role="form" method="get" action="">
                     <div class="form-group">
                         <div class="input-group">
-                            <select name="property" class="form-control" value="{echo $property}">
+                            <select name="property" class="form-control" value="{{echo $property}}">
                                 <option value="user_id">User-id</option>
                                 <option value="email">Email</option>
                                 <option value="live">Live</option>
@@ -15,7 +15,7 @@
                     </div>
                     <div class="form-group">
                         <div class="input-group">
-                            <input type="text" name="value" class="form-control" placeholder="Enter value" value="{echo $val}" />
+                            <input type="text" name="value" class="form-control" placeholder="Enter value" value="{{echo $val}}" />
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Search</button>
@@ -38,38 +38,38 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {foreach $u in $users}
+                            {{foreach $u in $users}}
                             <tr>
-                                <td># {echo $u->_id}</td>
-                                <td>{echo $u->name}</td>
-                                <td>{echo $u->email}</td>
+                                <td># {{echo $u->_id}}</td>
+                                <td>{{echo $u->name}}</td>
+                                <td>{{echo $u->email}}</td>
                                 <td>
-                                    {if $u->live == 0}
+                                    {{if $u->live == 0}}
                                     <span class="label label-warning">Suspended</span>
-                                    {/if} {else}
+                                    {{/if}} {{else}}
                                     <span class="label label-success">Active</span>
-                                    {/else}
+                                    {{/else}}
                                 </td>
-                                {script $date = date('Y-m-d H:i:s', $u->created->sec)}
-                                <td>{echo Framework\StringMethods::only_date($date)}</td>
+                                {{script $date = date('Y-m-d H:i:s', $u->created->sec)}}
+                                <td>{{echo Framework\StringMethods::only_date($date)}}</td>
                                 <td>
-                                    <a href="/admin/update/user/{echo $u->_id}" class="btn-xs btn btn-primary"><i class="fa fa-edit"></i> Edit</a>
-                                    <a href="/admin/deleteUser/{echo $u->_id}" class="delete btn btn-xs btn-danger" data-message="Careful This will remove the data for the user completely!!"><i class="fa fa-trash"></i> Delete Data</a>
+                                    <a href="/admin/update/user/{{echo $u->_id}}" class="btn-xs btn btn-primary"><i class="fa fa-edit"></i> Edit</a>
+                                    <a href="/admin/deleteUser/{{echo $u->_id}}" class="delete btn btn-xs btn-danger" data-message="Careful This will remove the data for the user completely!!"><i class="fa fa-trash"></i> Delete Data</a>
                                 </td>
                             </tr>
-                            {/foreach}
+                            {{/foreach}}
                         </tbody>
                     </table>
         		</div>
 
                 <div class="text-center">
                     <ul class="pager">
-                        {if ($page != 1)}
-                        <li><a href="{echo Shared\Markup::pagination($page - 1)}">Previous</a></li>
-                        {/if}
-                        {if ($page < $count/$limit)}
-                        <li><a href="{echo Shared\Markup::pagination($page + 1)}">Next</a></li>
-                        {/if}
+                        {{if ($page != 1)}}
+                        <li><a href="{{echo Shared\Markup::pagination($page - 1)}}">Previous</a></li>
+                        {{/if}}
+                        {{if ($page < $count/$limit)}}
+                        <li><a href="{{echo Shared\Markup::pagination($page + 1)}}">Next</a></li>
+                        {{/if}}
                     </ul>
                 </div>
         	</div>

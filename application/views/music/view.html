@@ -1,14 +1,14 @@
 <div role="main" class="ui-content">
-{include music/modals/error.html}
+{{include music/modals/error.html}}
     <div data-role="body">
         <a href="#popupVideo" data-rel="popup" data-position-to="window">
-            <img src="/home/image/{echo $id}/mqdefault.jpg" alt="">
+            <img src="/home/image/{{echo $id}}/mqdefault.jpg" alt="">
         </a>
         <div data-role="popup" id="popupVideo" data-overlay-theme="b" data-theme="a" data-tolerance="15,15" class="ui-content">
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
-            <iframe src="https://www.youtube.com/embed/{echo $id}" width="497" height="298" seamless=""></iframe>
+            <iframe src="https://www.youtube.com/embed/{{echo $id}}" width="497" height="298" seamless=""></iframe>
         </div>
-        <!-- <script src="{echo CDN}js/native.js"></script> -->
+        <!-- <script src="{{echo CDN}}js/native.js"></script> -->
         <a href="#popupVideo" data-rel="popup" data-position-to="window" class="ui-btn ui-btn-b" >Play Video</a>
         <ins class="byvnative" data-client="pub-57c6c75934243d930c8b4581" data-format="all" data-type="banner" data-width="300" data-height="200"></ins>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -21,20 +21,20 @@
         <script>
         (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
-        <a href="{echo URL}" class="fbshare ui-btn ui-btn-up-b">Share on Facebook</a>
+        <a href="{{echo URL}}" class="fbshare ui-btn ui-btn-up-b">Share on Facebook</a>
         <ul data-role="listview" data-inset="true">
             <li data-theme="b">
                 Video Quality
             </li>
-            <li><a href="/music/download/{echo $mp3}/{echo $id}?title={echo $title}&amp;ext=mp3" class="downloadThis" data-ajax="false">Download MP3</a></li>
-            {foreach $format in $formats} {foreach $f in $format}
+            <li><a href="/music/download/{{echo $mp3}}/{{echo $id}}?title={{echo $title}}&amp;ext=mp3" class="downloadThis" data-ajax="false">Download MP3</a></li>
+            {{foreach $format in $formats}} {{foreach $f in $format}}
             
                 <li>
-                    <a href="/music/download/{echo $f}/{echo $id}?ext={echo $f_i}&amp;title={echo $title}" class="downloadThis" data-ajax="false">
-                        {echo substr($title, 0, 50)} .. - {echo $format_i}.{echo $f_i}
+                    <a href="/music/download/{{echo $f}}/{{echo $id}}?ext={{echo $f_i}}&amp;title={{echo $title}}" class="downloadThis" data-ajax="false">
+                        {{echo substr($title, 0, 50)}} .. - {{echo sprintf("%s.%s", $format_i, $f_i)}}
                     </a>
                 </li>
-            {/foreach} {/foreach}
+            {{/foreach}} {{/foreach}}
         </ul>
     </div>
     <br><br><br>

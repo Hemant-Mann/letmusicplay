@@ -6,10 +6,10 @@
                 <div class="input-group">
                     <label class="sr-only">Model</label>
                     <select name="model" id="item" class="form-control">
-                        {script $models = Shared\Markup::models()}
-                        {foreach $m in $models}
-                        <option value="{echo $m}">{echo ucfirst($m)}</option>
-                        {/foreach}
+                        {{script $models = Shared\Markup::models()}}
+                        {{foreach $m in $models}}
+                        <option value="{{echo $m}}">{{echo ucfirst($m)}}</option>
+                        {{/foreach}}
                     </select>
                 </div>
             </div>
